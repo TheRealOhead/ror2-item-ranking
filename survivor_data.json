@@ -1,0 +1,219 @@
+{
+	"survivors": [
+		"Commando",
+		"Huntress",
+		"Bandit",
+		"MUL-T",
+		"Engineer",
+		"Artificer",
+		"Mercenary",
+		"REX",
+		"Loader",
+		"Acrid",
+		"Captain",
+		"Railgunner",
+		"Void Fiend",
+		"Seeker",
+		"False Son",
+		"Chef",
+		"Heretic"
+	],
+	"survivorVariations": {
+		"Commando": [
+			[
+				"Phase Round",
+				"Phase Blast"
+			],
+			[
+				"Tactical Dive",
+				"Tactical Roll"
+			],
+			[
+				"Supressive Fire",
+				"Frag Grenade"
+			]
+		],
+		"Huntress": [
+			[
+				"Strafe",
+				"Flurry"
+			],
+			[
+				"Blink",
+				"Phase Blink"
+			],
+			[
+				"Arrow Rain",
+				"Ballista"
+			]
+		],
+		"Bandit": [
+			[
+				"Burst",
+				"Blast"
+			],
+			[
+				"Serrated Dagger",
+				"Serrated Shiv"
+			],
+			[
+				"Lights Out",
+				"Desperado"
+			]
+		],
+		"MUL-T": [
+			[
+				"Auto-Nailgun",
+				"Rebar Puncher",
+				"Scrap Launcher",
+				"Power-Saw"
+			],
+			[
+				"Auto-Nailgun",
+				"Rebar Puncher",
+				"Scrap Launcher",
+				"Power-Saw"
+			],
+			[
+				"Retool",
+				"Power Mode"
+			]
+		],
+		"Engineer": [
+			[
+				"Pressure Mines",
+				"Spider Mines"
+			],
+			[
+				"Bubble Shield",
+				"Thermal Harpoons"
+			],
+			[
+				"TRI2 Gauss Auto-Turret (Stationary)",
+				"TR58 Carbonizer Turret (Walking)"
+			]
+		],
+		"Artificer": [
+			[
+				"Flame Bolt",
+				"Plasma Bolt"
+			],
+			[
+				"Charged Nano-Bomb",
+				"Cast Nano-Spear"
+			],
+			[
+				"Flamethrower",
+				"Ion Surge"
+			]
+		],
+		"Mercenary": [
+			[
+				"Whirlwind",
+				"Rising Thunder"
+			],
+			[
+				"Blinding Assault",
+				"Focused Assault"
+			],
+			[
+				"Eviscerate",
+				"Slicing Winds"
+			]
+		],
+		"REX": [
+			[
+				"DIRECTIVE: Drill",
+				"Seed Barrage"
+			],
+			[
+				"DIRECTIVE: Disperse",
+				"Brable Volley"
+			],
+			[
+				"DIRECTIVE: Harvest",
+				"Tangling Growth"
+			]
+		],
+		"Loader": [
+			[
+				"Grapple Fist",
+				"Spiked Fist"
+			],
+			[
+				"Charged Gauntlet",
+				"Thunder Gauntlet"
+			],
+			[
+				"M551 Pylon",
+				"Thunderslam"
+			]
+		],
+		"Acrid": [
+			[
+				"Poison",
+				"Blight"
+			],
+			[
+				"Neurotoxin",
+				"Ravenous Bite"
+			],
+			[
+				"Caustic Leap",
+				"Frenzied Leap"
+			]
+		],
+		"Captain": [
+			[
+				"Orbital Probe",
+				"OGM-72 'DIABLO' Strike"
+			],
+			[
+				"Beacon: Healing",
+				"Beacon: Shocking",
+				"Beacon: Resupply",
+				"Beacon: Hacking"
+			],
+			[
+				"Beacon: Healing",
+				"Beacon: Shocking",
+				"Beacon: Resupply",
+				"Beacon: Hacking"
+			]
+		],
+		"Railgunner": [
+			[
+				"M99 Sniper",
+				"HH44 Marksman"
+			],
+			[
+				"Concussion Device",
+				"Polar Field Device"
+			],
+			[
+				"Supercharge",
+				"Cryocharge"
+			]
+		],
+		"Void Fiend": [],
+		"Seeker": [
+			[
+				"Unseen Hand",
+				"Soul Spiral"
+			]
+		],
+		"False Son": [
+			[
+				"Laser of the Father",
+				"Laser Burst"
+			]
+		],
+		"Chef": [
+			[
+				"Glaze",
+				"Yes, Chef!"
+			]
+		],
+		"Heretic": []
+	}
+}

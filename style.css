@@ -1,0 +1,72 @@
+.item-image {
+	width: 128px;
+	height: 128px;
+	border: 5px solid black;
+
+	user-drag: none;
+	-webkit-user-drag: none;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.small-icon {
+	width: 16px;
+	height: 16px;
+}
+
+table, td {
+	border: 1px solid black;
+}
+
+#tooltip {
+	display: none;
+	position: fixed;
+	border: 1px solid black;
+	border-radius: 5px;
+	background-color: white;
+	max-width: 20%;
+}
+
+.container {
+	max-width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.Equipment {
+	-webkit-text-stroke: .25px black;
+	text-stroke: .25px black;
+	color: orange;
+}
+.Common {
+	-webkit-text-stroke: .25px black;
+	text-stroke: .25px black;
+	color: white;
+}
+.Uncommon {
+	-webkit-text-stroke: .25px black;
+	text-stroke: .25px black;
+	color: green;
+}
+.Legendary {
+	-webkit-text-stroke: .25px black;
+	text-stroke: .25px black;
+	color: red;
+}
+.Lunar {
+	-webkit-text-stroke: .25px black;
+	text-stroke: .25px black;
+	color: blue;
+}
+.Void {
+	-webkit-text-stroke: .25px black;
+	text-stroke: .25px black;
+	color: purple;
+}
+.Boss {
+	-webkit-text-stroke: .25px black;
+	text-stroke: .25px black;
+	color: yellow;
+}

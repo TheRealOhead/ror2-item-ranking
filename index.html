@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Multishop Simulator - Risk of Rain 2 Item Ranker</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div class="container">
+			You are <span id="survivor"></span><br>
+			<img class="item-image" id="item-image-0" src="">
+			<img class="item-image" id="item-image-1" src="">
+			<img class="item-image" id="item-image-2" src=""><br>
+			<button onclick="randomizeItems()">I'm not well informed enough to make a sound descision</button>
+			<button onclick="randomizeItems()">Scrap all three!</button>
+		</div>		
+		<div id="tooltip"></div>
+		<script type="text/javascript" src="./common_functions.js"></script>
+		<script type="text/javascript">
+			let itemList = {};
+			let debugTable;
+			let currentItems = [];
+			let tooltipElement = document.getElementById('tooltip');
+			let survivors;
+			let survivorVariations;
+
+
+			document.addEventListener('mousemove',(e)=>{
+				tooltipElement.style.left = e.clientX + 'px';
+				tooltipElement.style.top  = e.clientY + 20 + 'px';
+			});
+
+			Array.prototype.slice.call(document.getElementsByClassName('item-image')).forEach(element=>{
+				element.addEventListener('mouseenter',()=>{
+
+					// Generate tooltip
+					let item = currentItems[element.id.substr('item-image-'.length)];
+					tooltipElement.innerHTML = `${item.name}<br>
+					<span class="${item.itemRarity}">${item.itemRarity}</span><br>
+					${item.description}`
+					tooltipElement.style.display = 'block';
+				})
+				element.addEventListener('mouseleave',()=>{
+					tooltipElement.style.display = 'none';
+				})
+				element.addEventListener('click',()=>{
+					let item = currentItems[element.id.substr('item-image-'.length)];
+
+					let xhr = new XMLHttpRequest();
+					xhr.open("POST", window.location.href.split('/').slice(0,3).join('/') + '/submit', true);
+					xhr.setRequestHeader('Content-Type', 'application/json');
+					xhr.send(JSON.stringify({
+					    itemName: item.name
+					}));
+
+					randomizeItems();
+				})
+			});
+
+
+			
+
+
+			function randomizeItems() {
+				// Randomize survivor
+				let survivorElement = document.getElementById('survivor');
+				let survivor = randomElement(survivors);
+				survivorElement.innerHTML = survivor;
+				if (survivorVariations[survivor].length > 0) {
+					survivorElement.innerHTML += ' (';
+					survivorVariations[survivor].forEach(slot=>{
+						survivorElement.innerHTML += randomElement(slot) + ', ';
+					})
+					survivorElement.innerHTML = survivorElement.innerHTML.substr(0,survivorElement.innerHTML.lastIndexOf(', ')) + ')';
+				} 
+
+
+				// Get random rarity
+				let rarity = rarities[Math.floor(Math.random() * rarities.length)]
+
+
+				// Set each image to a random item
+				for (let i = 0; i < 3; i++) {
+					// Get random item
+					let item = {
+						itemRarity: undefined
+					}
+					while (item.itemRarity != rarity) {
+						item = itemList[Object.keys(itemList)[Math.floor(Math.random() * Object.keys(itemList).length)]];
+					}
+
+					let url = getItemURL(item, item.magicByte);
+					document.getElementById('item-image-' + i).src = url;
+					currentItems[i] = item;
+				}
+			}
+
+
+			fetch('survivor_data.json')
+				.then((response) => response.json())
+				.then((data) => {
+					survivors = data.survivors;
+					survivorVariations = data.survivorVariations;
+
+			fetch('items.json')
+				.then((response) => response.json())
+				.then((data) => {
+					itemList = data;
+
+			// I got these bytes by scraping the wiki. Need them to retrieve item images
+			fetch('magic_bytes.json')
+				.then((response) => response.json())
+				.then((data) => {
+
+					magicBytes = data;
+
+					for (let i = 0; i < Object.keys(itemList).length; i++) {
+						let item = itemList[Object.keys(itemList)[i]];
+						item.magicByte = magicBytes[item.name];
+					}
+
+					// Get rid of WorldUnique items (stuff like Halcyon Seed and Captain's Microbots)
+					let itemListSansWorldUnique = {};
+					Object.keys(itemList).forEach((itemKey)=>{
+						let item = itemList[itemKey];
+						if (!item.hasOwnProperty('category') || !item.category.includes('WorldUnique')) {
+							itemListSansWorldUnique[itemKey] = item;
+						}
+					})
+					itemList = itemListSansWorldUnique;
+
+					randomizeItems();
+
+				});
+
+
+				});
+
+
+				});
+
+		</script>
+	</body>
+</html>

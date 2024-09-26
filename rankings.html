@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Item Rankings</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div id="container" class="container"></div>
+		<script type="text/javascript" src="./common_functions.js"></script>
+		<script>
+			// We're gonna have the user's computer figure out the ranking 😈
+
+			const d = document;
+			function createBR() {
+				return d.createElement('br');
+			}
+			const container = d.getElementById('container');
+
+			fetch('.data/database.json')
+				.then((response) => response.json())
+				.then((database) => {
+
+			fetch('items.json')
+				.then((response) => response.json())
+				.then((itemList) => {
+
+			fetch('magic_bytes.json')
+				.then((response) => response.json())
+				.then((magicBytes) => {
+
+					// Sort items into each category (get rid of the ones that don't fit, they're not in the database anyway)
+					let categories = {};
+					rarities.forEach(rarity=>{ // Fill categories
+						categories[rarity] = [];
+					})
+					Object.keys(database.items).forEach(itemName=>{
+						let count = database.items[itemName];
+						let itemObject = itemList[itemName];
+
+						// Abort if rarity doesn't exist
+						if (!rarities.includes(itemObject.itemRarity)) return;
+
+						categories[itemObject.itemRarity].push({
+							name: itemName,
+							votes: count
+						});
+					})
+					Object.values(categories).forEach(listOfItemsOfGivenRarity=>{
+						listOfItemsOfGivenRarity.sort((a,b)=>{
+							return b.votes - a.votes;
+						})
+					});
+					
+					// Build HTML
+					Object.keys(categories).forEach(categoryName=>{
+						let label = d.createElement('span');
+						label.innerHTML = categoryName;
+						let table = d.createElement('table')
+
+						// First row
+						table.innerHTML = '<tr><td>Ranking</td><td></td><td>Item</td><td>Total Votes</td></tr>';
+
+						for (let i = 0; i < categories[categoryName].length; i++) {
+							let item = categories[categoryName][i];
+
+							let row = d.createElement('tr');
+
+							let ranking = d.createElement('td');
+							let imageTD = d.createElement('td');
+							let image = d.createElement('img');
+							let name = d.createElement('td');
+							let voteCount = d.createElement('td');
+							
+							ranking.innerHTML = '#' + (i + 1);
+							image.src = getItemURL(item, magicBytes[item.name]);
+							image.classList.add('small-icon');
+							imageTD.appendChild(image);
+							name.innerHTML = item.name;
+							voteCount.innerHTML = item.votes;
+
+							row.appendChild(ranking);
+							row.appendChild(imageTD);
+							row.appendChild(name);
+							row.appendChild(voteCount);
+
+							table.appendChild(row);
+						}
+
+						container.appendChild(label);
+						container.appendChild(createBR());
+						container.appendChild(table);
+						container.appendChild(createBR());
+					})
+
+				})	
+
+				})
+
+				})
+		</script>
+	</body>
+</html>
