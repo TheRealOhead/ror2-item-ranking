@@ -111,8 +111,8 @@ const server = http.createServer((req, res) => {
 });
 
 // Start the server
-server.listen(8080, () => {
-    console.log('Server is listening on port 8080');
+server.listen(80, () => {
+    console.log('Server is listening on port 80');
 });
 
 // Graceful shutdown
