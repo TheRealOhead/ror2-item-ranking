@@ -11,6 +11,7 @@ const allowedFiles = [
     '/rankings.html',
 
     '/style.css',
+    '/mobile_style.css',
 
     '/survivor_data.json',
     '/items.json',

@@ -1,0 +1,16 @@
+.hide-on-desktop {
+	display: block;
+}
+
+button {
+	padding: 2vh;
+}
+
+.center-both {
+	margin: inherit;
+	position: inherit;
+	top: inherit;
+	left: inherit;
+	-ms-transform: inherit;
+	transform: inherit;
+}

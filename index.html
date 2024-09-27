@@ -71,8 +71,11 @@
 				<img class="item-image" id="item-image-1">
 				<img class="item-image" id="item-image-2">
 			</div>
-			<button onclick="randomizeItems()">I'm not well informed enough to make a sound descision</button>
+			<button class="hide-on-desktop" id="submit-button">Submit</button>
+			<div class="hide-on-desktop" id="mobile-tooltip"></div>
 			<button onclick="randomizeItems()">Scrap all three!</button><br>
+			<button onclick="randomizeItems()">I'm not well informed enough to make a sound descision</button>
+			<br><br><br><br>
 			Check out my <a href="https://therealohead.github.io/homepage">homepage</a>!
 		</div>
 		<div id="tooltip"></div>
@@ -83,44 +86,72 @@
 			let currentItems = [];
 			let currentSurvivor = 'Potmobile';
 			let currentLoadout = [];
-			let tooltipElement = document.getElementById('tooltip');
+			let tooltipElement = runningOnTouchScreen() ? document.getElementById('mobile-tooltip') : document.getElementById('tooltip');
 			let survivors;
 			let survivorVariations;
+			let mobileSelectedItemElement = document.createElement('dummy');
+
+			const submitButton = document.getElementById('submit-button');
 
 
-			document.addEventListener('mousemove',(e)=>{
+			if (!runningOnTouchScreen()) document.addEventListener('mousemove',(e)=>{
 				tooltipElement.style.left = e.clientX + 'px';
 				tooltipElement.style.top  = e.clientY + 20 + 'px';
 			});
 
+			function refreshTooltip(element) {
+				// Generate tooltip
+				let item = currentItems[element.id.substr('item-image-'.length)];
+				tooltipElement.innerHTML = `${item.name}<br>
+				<span class="${item.itemRarity}">${item.itemRarity}</span><br>
+				${item.description}`
+				tooltipElement.style.display = 'block';
+			}
+
+			function submitItem(item) {
+				let xhr = new XMLHttpRequest();
+				xhr.open("POST", window.location.href.split('/').slice(0,3).join('/') + '/submit', true);
+				xhr.setRequestHeader('Content-Type', 'application/json');
+				xhr.send(JSON.stringify({
+				    itemName: item.name,
+				    survivor: currentSurvivor,
+				    loadout: currentLoadout
+				}));
+
+			}
+
+
 			Array.prototype.slice.call(document.getElementsByClassName('item-image')).forEach(element=>{
-				element.addEventListener('mouseenter',()=>{
-
-					// Generate tooltip
-					let item = currentItems[element.id.substr('item-image-'.length)];
-					tooltipElement.innerHTML = `${item.name}<br>
-					<span class="${item.itemRarity}">${item.itemRarity}</span><br>
-					${item.description}`
-					tooltipElement.style.display = 'block';
-				})
-				element.addEventListener('mouseleave',()=>{
+				if (!runningOnTouchScreen()) element.addEventListener('mouseenter',()=>{
+					refreshTooltip(element)
+				});
+				if (!runningOnTouchScreen()) element.addEventListener('mouseleave',()=>{
 					tooltipElement.style.display = 'none';
-				})
-				element.addEventListener('click',()=>{
+				});
+
+				// Desktop click functionality
+				if (!runningOnTouchScreen()) element.addEventListener('click',()=>{
 					let item = currentItems[element.id.substr('item-image-'.length)];
-
-					let xhr = new XMLHttpRequest();
-					xhr.open("POST", window.location.href.split('/').slice(0,3).join('/') + '/submit', true);
-					xhr.setRequestHeader('Content-Type', 'application/json');
-					xhr.send(JSON.stringify({
-					    itemName: item.name,
-					    survivor: currentSurvivor,
-					    loadout: currentLoadout
-					}));
-
+					submitItem(item);
 					randomizeItems();
-				})
+				});
+
+				// Mobile click functionality
+				if (runningOnTouchScreen()) element.addEventListener('touchend',()=>{
+					mobileSelectedItemElement.classList.remove('selected-item');
+					mobileSelectedItemElement = element;
+					mobileSelectedItemElement.classList.add('selected-item');
+					refreshTooltip(element);
+				});
 			});
+			submitButton.addEventListener('touchend',()=>{
+				let item = currentItems[mobileSelectedItemElement.id.substr('item-image-'.length)];
+				submitItem(item);
+				randomizeItems();
+				mobileSelectedItemElement.classList.remove('selected-item');
+				mobileSelectedItemElement = document.createElement('dummy');
+				tooltipElement.innerHTML = '';
+			})
 
 
 			

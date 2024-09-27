@@ -8,6 +8,11 @@ const rarities = [
 	'Lunar'
 ];
 
+function runningOnTouchScreen() {
+	return window.matchMedia("(pointer: coarse)").matches;
+}
+
+
 function randomElement(array) {
 	return array[Math.floor(Math.random() * array.length)];
 }
@@ -22,3 +27,10 @@ function getItemURL(item, magicByte) {
 }
 
 document.body.style.backgroundImage = `url("/images/${Math.floor(Math.random() * 12)}.png")`;
+
+if (runningOnTouchScreen()) {
+	let mobileCSS = document.createElement('link');
+	mobileCSS.rel = 'stylesheet';
+	mobileCSS.href = 'mobile_style.css';
+	document.head.appendChild(mobileCSS);
+}
