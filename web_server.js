@@ -18,13 +18,22 @@ const allowedFiles = [
     '/database.json',
 
     '/common_functions.js',
+
+    '/Bombardier.ttf',
 ]
+
+// Allow background images
+for (let i = 0; i < 12; i++) {
+    allowedFiles.push(`/images/${i}.png`);
+}
 
 const mimeTypes = {
     '.html': 'text/html',
     '.css': 'text/css',
     '.js': 'application/javascript',
     '.json': 'application/json',
+    '.png': 'image/png',
+    '.ttf': 'font/ttf',
 };
 
 // Get list of items

@@ -20,3 +20,5 @@ function customEncodeURIComponent(str) {
 function getItemURL(item, magicByte) {
 	return `https://static.wikia.nocookie.net/riskofrain2_gamepedia_en/images/${magicByte.charAt(0)}/${magicByte}/${customEncodeURIComponent(item.name.replaceAll(' ','_'))}.png`;
 }
+
+document.body.style.backgroundImage = `url("/images/${Math.floor(Math.random() * 12)}.png")`;
