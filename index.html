@@ -155,7 +155,7 @@
 					let item = {
 						itemRarity: undefined
 					}
-					while (item.itemRarity != rarity) {
+					while (item.itemRarity != rarity || currentItems.includes(item)) {
 						item = itemList[Object.keys(itemList)[Math.floor(Math.random() * Object.keys(itemList).length)]];
 					}
 
