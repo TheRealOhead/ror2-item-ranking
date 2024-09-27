@@ -70,6 +70,12 @@ const server = http.createServer((req, res) => {
 
     // Simple routing for different endpoints
     if (path === '/submit' && req.method === 'POST') {
+        
+
+        //req.socket.remoteAddress;
+
+
+
         let body = '';
 
         // Collect POST data
