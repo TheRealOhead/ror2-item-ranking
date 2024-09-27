@@ -145,8 +145,12 @@
 				} 
 
 
-				// Get random rarity
-				let rarity = rarities[Math.floor(Math.random() * rarities.length)]
+				// Get random rarity (weighted based on item amounts)
+				//let rarity = rarities[Math.floor(Math.random() * rarities.length)]
+				let rarity = undefined;
+				while (!rarities.includes(rarity)) {
+					rarity = itemList[Object.keys(itemList)[Math.floor(Math.random() * Object.keys(itemList).length)]].itemRarity;
+				}
 
 
 				// Set each image to a random item
