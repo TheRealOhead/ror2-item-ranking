@@ -42,7 +42,7 @@
 				console.log('dropdown.value == ' + dropdown.value)
 				console.log('database.survivors[dropdown.value] == ' + JSON.stringify(database.survivors[dropdown.value]))
 				Object.keys(dropdown.value == 'Everyone' ? database.items : (database.survivors[dropdown.value] || {})).forEach(itemName=>{
-					let count = database.items[itemName];
+					let count = dropdown.value == 'Everyone' ? database.items[itemName] : database.survivors[dropdown.value][itemName];
 					let itemObject = itemList[itemName];
 
 					// Abort if rarity doesn't exist
