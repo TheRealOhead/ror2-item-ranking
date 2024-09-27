@@ -49,7 +49,9 @@ if (!fs.existsSync(databasePath)) {
         survivors: {
 
         },
-        totalSubmitions:0
+        loadoutPerSurvivor: {
+
+        }
     };
 
     Object.keys(itemList).forEach(itemName=>{
@@ -66,7 +68,7 @@ const server = http.createServer((req, res) => {
     const parsedUrl = url.parse(req.url, true);
     let path = parsedUrl.pathname;
 
-    console.log('Path: ' + path)
+    console.log(`Path "${path}" requested by "${req.socket.remoteAddress}"`);
 
     // Simple routing for different endpoints
     if (path === '/submit' && req.method === 'POST') {
@@ -83,8 +85,12 @@ const server = http.createServer((req, res) => {
             body += chunk.toString();
         });
 
+
         req.on('end', () => {
             body = JSON.parse(body);
+            
+            console.log(body);
+            
             let itemName = body.itemName;
 
             if (!Object.keys(itemList).includes(itemName)) {
@@ -96,9 +102,19 @@ const server = http.createServer((req, res) => {
 
             // Insert data into the database
             let database = JSON.parse(fs.readFileSync(databasePath));
-            database['items'][itemName]++;
+            let loadout = [...new Set(body.loadout)]; // MUL-T and Captain can have two of the same ability, don't wanna count it twice
+            // Write default values
             database['survivors'][body.survivor] = database['survivors'][body.survivor] || {};
-            database['survivors'][body.survivor][itemName] = database['survivors'][body.survivor][itemName] + 1 || 1;
+            database['loadoutPerSurvivor'][body.survivor] = database['loadoutPerSurvivor'][body.survivor] || {};
+            loadout.forEach(ability=>{
+                database['loadoutPerSurvivor'][body.survivor][ability] = database['loadoutPerSurvivor'][body.survivor][ability] || {};
+            })
+            // Write values
+            database['items'][itemName]++; // Total
+            database['survivors'][body.survivor][itemName] = database['survivors'][body.survivor][itemName] + 1 || 1; // Per survivor
+            loadout.forEach(ability=>{ // Per survivor ability
+                database['loadoutPerSurvivor'][body.survivor][ability][itemName] = database['loadoutPerSurvivor'][body.survivor][ability][itemName] + 1 || 1;
+            })
             fs.writeFileSync(databasePath, JSON.stringify(database));
 
             res.writeHead(200, { 'Content-Type': 'text/plain' });

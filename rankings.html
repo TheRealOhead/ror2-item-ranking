@@ -9,9 +9,15 @@
 	<body>
 		<div id="container" class="container">
 			<a href="./">Get back to the voting</a><br><br>
-			Survivor: <select id="survivor-dropdown" onchange="fillTables()">
+			Survivor: <select id="survivor-dropdown">
 				<option value="Everyone">Everyone</option>
-			</select> (with so little data, some of the survivors<br> may have a very small amount of votes)<br>
+			</select>
+			<div id="ability-dropdown-container" style="display: none">
+				Ability: <select id="ability-dropdown">
+					<option>All</option>
+				</select>
+			</div>
+			<br>
 			<div id="table-container">
 			</div>
 		</div>
@@ -26,10 +32,35 @@
 			const container = d.getElementById('container');
 			const tableContainer = d.getElementById('table-container')
 			const dropdown = d.getElementById('survivor-dropdown');
+			const abilityDropdown = d.getElementById('ability-dropdown');
+			const abilityDropdownContainer = d.getElementById('ability-dropdown-container');
 
 			let itemList;
 			let magicBytes;
 			let database;
+			let survivorData;
+
+			dropdown.addEventListener('change',()=>{
+				// Check if we need to show the ability selector
+				if (dropdown.value != 'Everyone' && survivorData['survivorVariations'][dropdown.value].length != 0) {
+					abilityDropdownContainer.style.display = 'block';
+
+					abilityDropdown.innerHTML = '';
+
+					// Fill out abilities
+					['All',...new Set(survivorData['survivorVariations'][dropdown.value].join().split(','))].forEach(ability=>{
+						let option = d.createElement('option');
+						option.value = option.innerHTML = ability;
+						abilityDropdown.appendChild(option);
+					});
+				} else {
+					abilityDropdownContainer.style.display = 'none';
+				}
+
+				fillTables();
+			})
+
+			abilityDropdown.addEventListener('change',fillTables);
 
 			function fillTables() {
 				tableContainer.innerHTML = '';
@@ -39,14 +70,16 @@
 				rarities.forEach(rarity=>{ // Fill categories
 					categories[rarity] = [];
 				})
-				console.log('dropdown.value == ' + dropdown.value)
-				console.log('database.survivors[dropdown.value] == ' + JSON.stringify(database.survivors[dropdown.value]))
-				Object.keys(dropdown.value == 'Everyone' ? database.items : (database.survivors[dropdown.value] || {})).forEach(itemName=>{
-					let count = dropdown.value == 'Everyone' ? database.items[itemName] : database.survivors[dropdown.value][itemName];
+				Object.keys(dropdown.value == 'Everyone' ? database.items :  abilityDropdown.value == 'All' ? (database.survivors[dropdown.value] || {}) : (database.loadoutPerSurvivor[dropdown.value] !== undefined ? database.loadoutPerSurvivor[dropdown.value][abilityDropdown.value] : {}) || {})
+				.forEach(itemName=>{
+					let count = dropdown.value == 'Everyone' ? database.items[itemName] : (abilityDropdown.value == 'All' ? database.survivors[dropdown.value][itemName] : database.loadoutPerSurvivor[dropdown.value][abilityDropdown.value][itemName]);
 					let itemObject = itemList[itemName];
 
 					// Abort if rarity doesn't exist
 					if (!rarities.includes(itemObject.itemRarity)) return;
+
+					// Abort if item is WorldUnique
+					if (itemObject.hasOwnProperty('category') && itemObject.category.includes('WorldUnique')) return;
 
 					categories[itemObject.itemRarity].push({
 						name: itemName,
@@ -110,8 +143,9 @@
 			fetch('survivor_data.json')
 				.then((response) => response.json())
 				.then((data) => {
+					survivorData = data;
 
-					// Fill out the dropdown menu
+					// Fill out the survivor dropdown menu
 					data.survivors.forEach(survivor=>{
 						let option = d.createElement('option');
 						option.innerHTML = option.value = survivor;

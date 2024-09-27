@@ -3677,6 +3677,7 @@
     "name": "Fuel Array",
     "shortDescription": "Looks like it could power something. EXTREMELY unstable...",
     "description": "Looks like it could power something. EXTREMELY unstable...",
-    "itemRarity": "Equipment"
+    "itemRarity": "Equipment",
+    "category": ["WorldUnique"]
   }
 }
