@@ -21,6 +21,8 @@ const allowedFiles = [
     '/common_functions.js',
 
     '/Bombardier.ttf',
+
+    '/ads.txt',
 ]
 
 // Allow background images
@@ -31,6 +33,7 @@ for (let i = 0; i < 12; i++) {
 const mimeTypes = {
     '.html': 'text/html',
     '.css': 'text/css',
+    '.txt':'text/plain',
     '.js': 'application/javascript',
     '.json': 'application/json',
     '.png': 'image/png',
