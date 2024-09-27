@@ -2,7 +2,7 @@ const http    = require('http');
 const fs      = require('fs');
 const url     = require('url');
 
-const databasePath = './.data/database.json'
+const databasePath = './database.json'
 const itemListPath = './items.json';
 
 const allowedFiles = [
@@ -15,7 +15,7 @@ const allowedFiles = [
     '/survivor_data.json',
     '/items.json',
     '/magic_bytes.json',
-    '/.data/database.json',
+    '/database.json',
 
     '/common_functions.js',
 ]
@@ -35,6 +35,9 @@ if (!fs.existsSync(databasePath)) {
 
     let database = {
         items: {
+
+        },
+        survivors: {
 
         },
         totalSubmitions:0
@@ -79,6 +82,8 @@ const server = http.createServer((req, res) => {
             // Insert data into the database
             let database = JSON.parse(fs.readFileSync(databasePath));
             database['items'][itemName]++;
+            database['survivors'][body.survivor] = database['survivors'][body.survivor] || {};
+            database['survivors'][body.survivor][itemName] = database['survivors'][body.survivor][itemName] + 1 || 1;
             fs.writeFileSync(databasePath, JSON.stringify(database));
 
             res.writeHead(200, { 'Content-Type': 'text/plain' });

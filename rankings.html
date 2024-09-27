@@ -9,6 +9,11 @@
 	<body>
 		<div id="container" class="container">
 			<a href="./">Get back to the voting</a><br><br>
+			Survivor: <select id="survivor-dropdown" onchange="fillTables()">
+				<option value="Everyone">Everyone</option>
+			</select> (with so little data, some of the survivors may have a very small amount of votes)<br>
+			<div id="table-container">
+			</div>
 		</div>
 		<script type="text/javascript" src="./common_functions.js"></script>
 		<script>
@@ -19,84 +24,114 @@
 				return d.createElement('br');
 			}
 			const container = d.getElementById('container');
+			const tableContainer = d.getElementById('table-container')
+			const dropdown = d.getElementById('survivor-dropdown');
 
-			fetch('.data/database.json')
+			let itemList;
+			let magicBytes;
+			let database;
+
+			function fillTables() {
+				tableContainer.innerHTML = '';
+
+				// Sort items into each category (get rid of the ones that don't fit, they're not in the database anyway)
+				let categories = {};
+				rarities.forEach(rarity=>{ // Fill categories
+					categories[rarity] = [];
+				})
+				console.log('dropdown.value == ' + dropdown.value)
+				console.log('database.survivors[dropdown.value] == ' + JSON.stringify(database.survivors[dropdown.value]))
+				Object.keys(dropdown.value == 'Everyone' ? database.items : (database.survivors[dropdown.value] || {})).forEach(itemName=>{
+					let count = database.items[itemName];
+					let itemObject = itemList[itemName];
+
+					// Abort if rarity doesn't exist
+					if (!rarities.includes(itemObject.itemRarity)) return;
+
+					categories[itemObject.itemRarity].push({
+						name: itemName,
+						votes: count
+					});
+				})
+				Object.values(categories).forEach(listOfItemsOfGivenRarity=>{
+					listOfItemsOfGivenRarity.sort((a,b)=>{
+						return b.votes - a.votes;
+					})
+				});
+				
+				// Build HTML
+				Object.keys(categories).forEach(categoryName=>{
+					let label = d.createElement('span');
+					label.innerHTML = categoryName;
+					let table = d.createElement('table')
+
+					// First row
+					table.innerHTML = '<tr><td>Ranking</td><td></td><td>Item</td><td>Total Votes</td></tr>';
+
+					for (let i = 0; i < categories[categoryName].length; i++) {
+						let item = categories[categoryName][i];
+
+						let row = d.createElement('tr');
+
+						let ranking = d.createElement('td');
+						let imageTD = d.createElement('td');
+						let image = d.createElement('img');
+						let name = d.createElement('td');
+						let voteCount = d.createElement('td');
+						
+						ranking.innerHTML = '#' + (i + 1);
+						image.src = getItemURL(item, magicBytes[item.name]);
+						image.classList.add('small-icon');
+						imageTD.appendChild(image);
+						name.innerHTML = item.name;
+						voteCount.innerHTML = item.votes;
+
+						row.appendChild(ranking);
+						row.appendChild(imageTD);
+						row.appendChild(name);
+						row.appendChild(voteCount);
+
+						table.appendChild(row);
+					}
+
+					tableContainer.appendChild(label);
+					tableContainer.appendChild(createBR());
+					tableContainer.appendChild(table);
+					tableContainer.appendChild(createBR());
+				})
+			}
+
+			fetch('database.json')
 				.then((response) => response.json())
-				.then((database) => {
+				.then((data) => {
+					database = data;
+
+			fetch('survivor_data.json')
+				.then((response) => response.json())
+				.then((data) => {
+
+					// Fill out the dropdown menu
+					data.survivors.forEach(survivor=>{
+						let option = d.createElement('option');
+						option.innerHTML = option.value = survivor;
+						dropdown.appendChild(option);
+					});
 
 			fetch('items.json')
 				.then((response) => response.json())
-				.then((itemList) => {
+				.then((data) => {
+					itemList = data;
 
 			fetch('magic_bytes.json')
 				.then((response) => response.json())
-				.then((magicBytes) => {
+				.then((data) => {
+					magicBytes = data;
 
-					// Sort items into each category (get rid of the ones that don't fit, they're not in the database anyway)
-					let categories = {};
-					rarities.forEach(rarity=>{ // Fill categories
-						categories[rarity] = [];
-					})
-					Object.keys(database.items).forEach(itemName=>{
-						let count = database.items[itemName];
-						let itemObject = itemList[itemName];
-
-						// Abort if rarity doesn't exist
-						if (!rarities.includes(itemObject.itemRarity)) return;
-
-						categories[itemObject.itemRarity].push({
-							name: itemName,
-							votes: count
-						});
-					})
-					Object.values(categories).forEach(listOfItemsOfGivenRarity=>{
-						listOfItemsOfGivenRarity.sort((a,b)=>{
-							return b.votes - a.votes;
-						})
-					});
-					
-					// Build HTML
-					Object.keys(categories).forEach(categoryName=>{
-						let label = d.createElement('span');
-						label.innerHTML = categoryName;
-						let table = d.createElement('table')
-
-						// First row
-						table.innerHTML = '<tr><td>Ranking</td><td></td><td>Item</td><td>Total Votes</td></tr>';
-
-						for (let i = 0; i < categories[categoryName].length; i++) {
-							let item = categories[categoryName][i];
-
-							let row = d.createElement('tr');
-
-							let ranking = d.createElement('td');
-							let imageTD = d.createElement('td');
-							let image = d.createElement('img');
-							let name = d.createElement('td');
-							let voteCount = d.createElement('td');
-							
-							ranking.innerHTML = '#' + (i + 1);
-							image.src = getItemURL(item, magicBytes[item.name]);
-							image.classList.add('small-icon');
-							imageTD.appendChild(image);
-							name.innerHTML = item.name;
-							voteCount.innerHTML = item.votes;
-
-							row.appendChild(ranking);
-							row.appendChild(imageTD);
-							row.appendChild(name);
-							row.appendChild(voteCount);
-
-							table.appendChild(row);
-						}
-
-						container.appendChild(label);
-						container.appendChild(createBR());
-						container.appendChild(table);
-						container.appendChild(createBR());
-					})
+					fillTables()
 
 				})	
+
+				})
 
 				})
 

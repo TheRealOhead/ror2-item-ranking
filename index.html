@@ -22,6 +22,7 @@
 			let itemList = {};
 			let debugTable;
 			let currentItems = [];
+			let currentSurvivor = 'Potmobile';
 			let tooltipElement = document.getElementById('tooltip');
 			let survivors;
 			let survivorVariations;
@@ -52,7 +53,8 @@
 					xhr.open("POST", window.location.href.split('/').slice(0,3).join('/') + '/submit', true);
 					xhr.setRequestHeader('Content-Type', 'application/json');
 					xhr.send(JSON.stringify({
-					    itemName: item.name
+					    itemName: item.name,
+					    survivor: currentSurvivor
 					}));
 
 					randomizeItems();
@@ -66,7 +68,7 @@
 			function randomizeItems() {
 				// Randomize survivor
 				let survivorElement = document.getElementById('survivor');
-				let survivor = randomElement(survivors);
+				let survivor = currentSurvivor = randomElement(survivors);
 				survivorElement.innerHTML = survivor;
 				if (survivorVariations[survivor].length > 0) {
 					survivorElement.innerHTML += ' (';
